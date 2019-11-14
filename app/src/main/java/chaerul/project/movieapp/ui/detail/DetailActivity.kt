@@ -1,10 +1,10 @@
-package chaerul.project.movieapp.view.detail
+package chaerul.project.movieapp.ui.detail
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import chaerul.project.movieapp.MovieModel
+import androidx.lifecycle.ViewModelProviders
+import chaerul.project.movieapp.DataModel
 import chaerul.project.movieapp.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail.*
@@ -18,20 +18,10 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        detailViewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
 
-        this.getData()
-        this.displayData()
-    }
-
-    private fun getData() {
-        val movie: MovieModel? = intent.getParcelableExtra("movie")
-        detailViewModel = DetailViewModel(movie)
-    }
-
-    private fun displayData() {
-        Picasso.get().load(detailViewModel.getPhoto()!!).into(ivDetailPhoto)
-        tvDetailName.text = detailViewModel.getName()
-        tvDetailDescription.text = detailViewModel.getDescription()
+        setData()
+        setDisplayData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -43,4 +33,22 @@ class DetailActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun setData() {
+        if (intent != null) {
+            val data: DataModel? = intent.getParcelableExtra("data")
+
+            if (data != null) {
+                detailViewModel.setMovieModel(data)
+            }
+        }
+    }
+
+    private fun setDisplayData() {
+        Picasso.get().load(detailViewModel.getPhoto()).into(ivDetailPoster)
+        tvDetailName.text = detailViewModel.getName()
+        tvDetailSynopsis.text = detailViewModel.getDescription()
+    }
+
+
 }
