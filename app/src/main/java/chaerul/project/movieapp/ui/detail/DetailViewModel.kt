@@ -1,19 +1,19 @@
 package chaerul.project.movieapp.ui.detail
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import chaerul.project.movieapp.DataModel
+import chaerul.project.movieapp.api.model.DataModel
 
 class DetailViewModel : ViewModel() {
 
-    private lateinit var data: DataModel
+    private var data = MutableLiveData<DataModel>()
 
-    fun getPhoto() = data.photo
+    fun getDataModel(): LiveData<DataModel> {
+        return data
+    }
 
-    fun getName() = data.name
-
-    fun getDescription() = data.descrption
-
-    fun setMovieModel(dataModel: DataModel) {
-        this.data = dataModel
+    fun setDataModel(dataModel: DataModel) {
+        this.data.postValue(dataModel)
     }
 }

@@ -4,6 +4,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
+def keystorePropertiesFile = rootProject.file("local.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -21,6 +27,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildTypes.each {
+        // URL credentials components
+        it.buildConfigField 'String', 'API_KEY', '"ead97d7defc8e1a2384a828b0ba53b28"'
     }
 
     androidExtensions {
@@ -46,6 +57,17 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha04'
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0-alpha04'
+
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+
+    //Picasso for Image Loading
+    implementation ('com.squareup.picasso:picasso:2.71828'){
+        exclude group: "com.android.support"
+    }
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -1,18 +1,23 @@
 package chaerul.project.movieapp.ui.main
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import chaerul.project.movieapp.DataModel
 import chaerul.project.movieapp.R
+import chaerul.project.movieapp.api.model.DataModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_item.view.*
 
-class MainItemAdapter(listeners: OnItemClicked) :
-    RecyclerView.Adapter<MainItemAdapter.ViewHolder>() {
+class MainItemAdapter(listeners: OnItemClicked) : RecyclerView.Adapter<MainItemAdapter.ViewHolder>() {
 
-    val movies = arrayListOf<DataModel>()
+    companion object{
+        private const val URL_BASE_IMAGE = "https://image.tmdb.org/t/p"
+        private const val URL_SIZE_IMAGE = "/w185"
+    }
+
+    private val data = arrayListOf<DataModel>()
     private val listener: OnItemClicked = listeners
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,17 +30,26 @@ class MainItemAdapter(listeners: OnItemClicked) :
         )
     }
 
-    override fun getItemCount(): Int = movies.size
+    fun setData(datas: ArrayList<DataModel>){
+        data.clear()
+        data.addAll(datas)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data: DataModel = movies[position]
+        val data: DataModel = data[position]
         holder.bind(data)
         holder.itemView.setOnClickListener { listener.itemClicked(data) }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: DataModel) {
-            Picasso.get().load(data.photo).resize(395, 550).into(itemView.ivMoviePoster)
+            val uri = URL_BASE_IMAGE + URL_SIZE_IMAGE + data.photo
+            val url = Uri.parse(uri).buildUpon().build().toString()
+
+            Picasso.get().load(url).resize(395, 550).into(itemView.ivMoviePoster)
         }
     }
 

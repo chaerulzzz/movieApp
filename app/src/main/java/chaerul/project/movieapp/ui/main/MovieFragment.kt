@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import chaerul.project.movieapp.DataModel
 import chaerul.project.movieapp.R
+import chaerul.project.movieapp.api.model.DataModel
 import chaerul.project.movieapp.ui.detail.DetailActivity
+import chaerul.project.movieapp.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_movie.*
 
 class MovieFragment : Fragment(), MainItemAdapter.OnItemClicked {
@@ -26,18 +28,21 @@ class MovieFragment : Fragment(), MainItemAdapter.OnItemClicked {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        val adapter = MainItemAdapter(this)
+        val dialog = context?.let { ProgressDialog(it) }
+        dialog?.show()
+
+        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
+        viewModel.setMovies()
 
         rvMovie.layoutManager = GridLayoutManager(activity, 2)
-        rvMovie.adapter = MainItemAdapter(this)
+        rvMovie.adapter = adapter
 
-        setData()
-    }
-
-    private fun setData() {
-        val adapter: MainItemAdapter = rvMovie.adapter as MainItemAdapter
-
-        adapter.movies.addAll(viewModel.getAllMovies())
+        viewModel.getAllMovies().observe(this, Observer { movies ->
+            adapter.setData(movies)
+            dialog?.dismiss()
+        })
     }
 
     override fun itemClicked(data: DataModel) {

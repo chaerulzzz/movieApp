@@ -7,16 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import chaerul.project.movieapp.DataModel
 import chaerul.project.movieapp.R
+import chaerul.project.movieapp.api.model.DataModel
 import chaerul.project.movieapp.ui.detail.DetailActivity
+import chaerul.project.movieapp.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_tv.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class TVFragment : Fragment(), MainItemAdapter.OnItemClicked {
 
     override fun onCreateView(
@@ -31,18 +30,21 @@ class TVFragment : Fragment(), MainItemAdapter.OnItemClicked {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        val adapter = MainItemAdapter(this)
+        val dialog = context?.let { ProgressDialog(it) }
+        dialog?.show()
+
+        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
+        viewModel.setTvs()
 
         rvTvShows.layoutManager = GridLayoutManager(activity, 2)
-        rvTvShows.adapter = MainItemAdapter(this)
+        rvTvShows.adapter = adapter
 
-        setData()
-    }
-
-    private fun setData() {
-        val adapter: MainItemAdapter = rvTvShows.adapter as MainItemAdapter
-
-        adapter.movies.addAll(viewModel.getAllTvShows())
+        viewModel.getAllTvShows().observe(this, Observer { tvShows ->
+            adapter.setData(tvShows)
+            dialog?.dismiss()
+        })
     }
 
     override fun itemClicked(data: DataModel) {
