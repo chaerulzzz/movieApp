@@ -3,5 +3,9 @@
     <string name="data">Movies</string>
     <string name="tv_show">TV Shows</string>
     <string name="change_language_setting">Change Language Setting</string>
-
+    <string name="detail_title">Title</string>
+    <string name="detail_release_date">Release Date</string>
+    <string name="detail_synopsis">Synopsis</string>
+    <string name="detail_divider">:</string>
+    <string name="detail_example">Example</string>
 </resources>

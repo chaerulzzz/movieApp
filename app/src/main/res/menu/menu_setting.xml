@@ -4,5 +4,6 @@
     <item
         android:id="@+id/action_change_settings"
         android:title="@string/change_language_setting"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_settings_white_24dp"
+        app:showAsAction="always"/>
 </menu>

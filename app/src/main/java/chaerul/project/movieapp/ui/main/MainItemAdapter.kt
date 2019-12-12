@@ -49,7 +49,7 @@ class MainItemAdapter(listeners: OnItemClicked) : RecyclerView.Adapter<MainItemA
             val uri = URL_BASE_IMAGE + URL_SIZE_IMAGE + data.photo
             val url = Uri.parse(uri).buildUpon().build().toString()
 
-            Picasso.get().load(url).resize(395, 550).into(itemView.ivMoviePoster)
+            Picasso.get().load(url).into(itemView.ivMoviePoster)
         }
     }
 

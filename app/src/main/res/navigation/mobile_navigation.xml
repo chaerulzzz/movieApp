@@ -16,5 +16,10 @@
         android:name="chaerul.project.movieapp.ui.main.TVFragment"
         android:label="@string/tv_show"
         tools:layout="@layout/fragment_tv" />
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="chaerul.project.movieapp.ui.main.favorite.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" />
 
 </navigation>

@@ -3,4 +3,9 @@
     <string name="data">Film</string>
     <string name="tv_show">Acara Tv</string>
     <string name="change_language_setting">Ubah Pengaturan</string>
+    <string name="detail_title">Judul</string>
+    <string name="detail_release_date">Tanggal Rilis</string>
+    <string name="detail_synopsis">Sinopsis</string>
+    <string name="detail_divider">:</string>
+    <string name="detail_example">Contoh</string>
 </resources>

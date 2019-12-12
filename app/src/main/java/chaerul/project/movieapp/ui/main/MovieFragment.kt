@@ -38,6 +38,7 @@ class MovieFragment : Fragment(), MainItemAdapter.OnItemClicked {
 
         rvMovie.layoutManager = GridLayoutManager(activity, 2)
         rvMovie.adapter = adapter
+        rvMovie.isNestedScrollingEnabled = false
 
         viewModel.getAllMovies().observe(this, Observer { movies ->
             adapter.setData(movies)
@@ -48,6 +49,7 @@ class MovieFragment : Fragment(), MainItemAdapter.OnItemClicked {
     override fun itemClicked(data: DataModel) {
         val intent = Intent(context, DetailActivity::class.java)
         intent.putExtra("data", data)
+        intent.putExtra("id", data.id)
         this.startActivity(intent)
     }
 }
