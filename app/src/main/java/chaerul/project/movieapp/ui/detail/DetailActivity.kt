@@ -41,7 +41,12 @@ class DetailActivity : AppCompatActivity() {
         setData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.let { this.initMenu(it) }
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun initMenu(menu: Menu){
         GlobalScope.launch(Dispatchers.Main) {
             if (intent != null) {
                 val id: Int? = intent.getIntExtra("id", 0)
@@ -65,8 +70,6 @@ class DetailActivity : AppCompatActivity() {
                 menuInflater.inflate(R.menu.menu_detail_unfavorite, menu)
             }
         }
-
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -75,10 +78,20 @@ class DetailActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
+
+            R.id.detailFavorite -> {
+                detailViewModel.getDataModel().observe(this, Observer { data ->
+                    data.id?.let { detailViewModel.deleteFavoriteData(it) }
+                })
+                invalidateOptionsMenu()
+                true
+            }
+
             R.id.detailUnfavorite -> {
                 detailViewModel.getDataModel().observe(this, Observer { data ->
-                    detailViewModel.addFavoriteMovie(data)
+                    detailViewModel.addFavoriteData(data)
                 })
+                invalidateOptionsMenu()
                 true
             }
 
@@ -89,9 +102,14 @@ class DetailActivity : AppCompatActivity() {
     private fun extractData() {
         if (intent != null) {
             val data: DataModel? = intent.getParcelableExtra("data")
+            val isMovie: Boolean? = intent.getBooleanExtra("isMovie", true)
 
             if (data != null) {
                 detailViewModel.setDataModel(data)
+            }
+
+            if (isMovie != null) {
+                detailViewModel.setThisDataIsMovie(isMovie)
             }
         }
     }
@@ -106,6 +124,13 @@ class DetailActivity : AppCompatActivity() {
 
             Picasso.get().load(url).into(ivDetailPoster)
             tvDetailTitle.text = dataModel.title
+
+            if (detailViewModel.getThisDataIsMovie()) {
+                tvDate.text = resources.getString(R.string.detail_release_date)
+            } else {
+                tvDate.text = resources.getString(R.string.detail_firs_air_date)
+            }
+
             tvDetailReleaseDate.text = dataModel.releaseDate
             tvDetailSynopsis.text = dataModel.overview
             dialog.dismiss()

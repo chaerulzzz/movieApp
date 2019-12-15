@@ -2,10 +2,13 @@
     <string name="app_name">MovieApp</string>
     <string name="data">Movies</string>
     <string name="tv_show">TV Shows</string>
+    <string name="favorites">Favorites</string>
     <string name="change_language_setting">Change Language Setting</string>
     <string name="detail_title">Title</string>
     <string name="detail_release_date">Release Date</string>
+    <string name="detail_firs_air_date">First Air Date</string>
     <string name="detail_synopsis">Synopsis</string>
     <string name="detail_divider">:</string>
     <string name="detail_example">Example</string>
+    <string name="no_data">The Data is Empty</string>
 </resources>

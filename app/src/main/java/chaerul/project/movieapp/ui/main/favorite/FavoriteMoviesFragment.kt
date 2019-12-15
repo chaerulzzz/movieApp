@@ -1,4 +1,4 @@
-package chaerul.project.movieapp.ui.main
+package chaerul.project.movieapp.ui.main.favorite
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,35 +13,47 @@ import chaerul.project.movieapp.R
 import chaerul.project.movieapp.api.model.DataModel
 import chaerul.project.movieapp.ui.detail.DetailActivity
 import chaerul.project.movieapp.ui.dialog.ProgressDialog
-import kotlinx.android.synthetic.main.fragment_movie.*
+import chaerul.project.movieapp.ui.main.MainItemAdapter
+import kotlinx.android.synthetic.main.favorite_movies_fragment.*
 
-class MovieFragment : Fragment(), MainItemAdapter.OnItemClicked {
+class FavoriteMoviesFragment : Fragment(), MainItemAdapter.OnItemClicked {
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: FavoriteViewModel
+    val adapter = MainItemAdapter(this)
+    val dialog = context?.let { ProgressDialog(it) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_movie, container, false)
+        return inflater.inflate(R.layout.favorite_movies_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        ).get(FavoriteViewModel::class.java)
 
-        val adapter = MainItemAdapter(this)
-        val dialog = context?.let { ProgressDialog(it) }
         dialog?.show()
-
-        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
-        viewModel.setMovies()
 
         rvMovie.layoutManager = GridLayoutManager(activity, 2)
         rvMovie.adapter = adapter
         rvMovie.isNestedScrollingEnabled = false
+    }
 
-        viewModel.getAllMovies().observe(this, Observer { movies ->
-            adapter.setData(movies)
+    override fun onResume() {
+        super.onResume()
+        viewModel.getMoviesInLocal()?.observe(this, Observer { movies ->
+            if (movies.size > 0) {
+                adapter.setData(movies)
+                tvNoData.visibility = View.GONE
+                rvMovie.visibility = View.VISIBLE
+            } else {
+                tvNoData.visibility = View.VISIBLE
+                rvMovie.visibility = View.GONE
+            }
             dialog?.dismiss()
         })
     }
